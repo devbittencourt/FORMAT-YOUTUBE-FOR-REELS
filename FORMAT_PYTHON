@@ -1,0 +1,33 @@
+import os
+from moviepy.editor import VideoFileClip, vfx
+import tkinter as tk
+from tkinter import filedialog
+from moviepy.video.fx.all import crop
+
+fator= 2/3
+def resize_video(input_video_path, output_video_path):
+    clip = VideoFileClip(input_video_path)
+
+    w = 400
+    h = 1200
+    cropped_clip = crop(clip, width=w, height=h ,x_center=w*1.5, y_center=h / 2 )
+    cropped_clip.write_videofile(output_video_path, codec="libx264")
+
+
+def select_videos():
+    file_paths = filedialog.askopenfilenames(filetypes=[("Video files", "*.mp4")])
+    if file_paths:
+        output_folder = os.path.join(os.path.dirname(file_paths[0]), "9x16")
+        os.makedirs(output_folder, exist_ok=True)
+        for file_path in file_paths:
+            output_file_path = os.path.join(output_folder, os.path.basename(file_path)[:-4] + "_9x16.mp4")
+            resize_video(file_path, output_file_path)
+            print("Video resized and saved as:", output_file_path)
+        print("All videos resized successfully!")
+
+# Create Tkinter window
+root = tk.Tk()
+root.withdraw()  # Hide the main window
+
+# Select videos and resize
+select_videos()
